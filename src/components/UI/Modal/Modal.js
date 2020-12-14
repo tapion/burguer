@@ -5,14 +5,6 @@ import Aux from './../../../hoc/Auxiliar';
 
 class Modal extends Component{
 
-    componentWillMount(){
-        console.log('esto es otro ingreso')
-    }
-
-    componentDidMount (){
-        console.log('ingreso');
-    }
-
     shouldComponentUpdate(nextProps,nextState){
         return nextProps.showModal !== this.props.showModal;
     }
