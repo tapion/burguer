@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+import axios from '../../axios-orders';
 
 import Aux from './../../hoc/Auxiliar';
 import Burger from './../../components/Burger/Burger';
 import BuildControls from './../../components/Burger/BuildControls/BuildControls';
 import Modal from './../../components/UI/Modal/Modal';
 import OrderSummary from './../../components/Burger/OrderSummary/OrderSummary';
+import Spinner from './../../components/UI/Spinner/Spinner';
+import withErrorHandler from './../../hoc/withErrorHandler/withErrorHandler';
 
 const INGREDIENTS_PRICES = {
     salad: 0.5,
@@ -23,7 +26,8 @@ class BurgerBuilder extends Component{
         },
         totalPrice: 4,
         purchasable: false,
-        purchasing: false
+        purchasing: false,
+        loading: false
     }
 
     checkPurchesableHandler = () =>{
@@ -75,10 +79,36 @@ class BurgerBuilder extends Component{
     }
 
     continuePurchaseHandler = () => {
-        alert('ehhhhhh');
+        this.setState({loading: true})
+        const ingredients = {
+            ingredients: this.state.ingredients,
+            totalPrice: this.state.totalPrice,
+            customer: {
+                name: 'Miguel Vargas',
+                country: 'Colombia',
+                address: {
+                    neighborn: 'Perdomo',
+                    area: 'Ciudad Perdomo'
+                }
+            }
+        }
+
+
+        axios.post('/orders.json', ingredients)
+            .then(res => {})
+            .catch(err => console.error(err))
+            .finally(() => {this.setState({loading: false}); this.showOrder()});
     }
 
     render(){
+        let orderSumary = <OrderSummary 
+                            price={this.state.totalPrice.toFixed(2)}
+                            continue={this.continuePurchaseHandler}
+                            cancelOrder={this.showOrder}
+                            ingredients={this.state.ingredients} />;
+        if(this.state.loading){
+            orderSumary = <Spinner />
+        }
         const disbledButton = {...this.state.ingredients};
         Object.keys(disbledButton).forEach(ingre => disbledButton[ingre] = disbledButton[ingre] <= 0);
         return (
@@ -86,11 +116,7 @@ class BurgerBuilder extends Component{
                 <Modal 
                     showModal ={this.state.purchasing} 
                     closeModal={this.showOrder}>
-                    <OrderSummary 
-                        price={this.state.totalPrice.toFixed(2)}
-                        continue={this.continuePurchaseHandler}
-                        cancelOrder={this.showOrder}
-                        ingredients={this.state.ingredients} />
+                    {orderSumary}
                 </Modal>
                 <Burger ingredients={this.state.ingredients} />
                 <BuildControls 
@@ -105,4 +131,4 @@ class BurgerBuilder extends Component{
     }
 }
 
-export default BurgerBuilder;
+export default withErrorHandler(BurgerBuilder);
