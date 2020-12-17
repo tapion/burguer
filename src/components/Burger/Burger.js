@@ -1,7 +1,7 @@
 import classes from './Burger.module.css';
 import BurgerIngredient from './BurgerIngredient/BurgerIngredient';
 
-const burger = props => {
+const burger = props => {    
     const middleIngredients = Object.keys(props.ingredients)
         .map(ingredient => {
             return [...Array(props.ingredients[ingredient])]
