@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from '../../axios-orders';
 
 import Aux from './../../hoc/Auxiliar';
 import Burger from './../../components/Burger/Burger';
@@ -8,6 +7,7 @@ import Modal from './../../components/UI/Modal/Modal';
 import OrderSummary from './../../components/Burger/OrderSummary/OrderSummary';
 import Spinner from './../../components/UI/Spinner/Spinner';
 import withErrorHandler from './../../hoc/withErrorHandler/withErrorHandler';
+import axios from '../../axios-orders';
 
 
 const INGREDIENTS_PRICES = {
@@ -85,25 +85,33 @@ class BurgerBuilder extends Component{
     }
 
     continuePurchaseHandler = () => {
-        this.setState({loading: true})
-        const ingredients = {
-            ingredients: this.state.ingredients,
-            totalPrice: this.state.totalPrice,
-            customer: {
-                name: 'Miguel Vargas Cabezas',
-                country: 'Colombia',
-                address: {
-                    neighborn: 'Perdomo',
-                    area: 'Ciudad Perdomo'
-                }
-            }
-        }
+        // this.setState({loading: true})
+        // const ingredients = {
+        //     ingredients: this.state.ingredients,
+        //     totalPrice: this.state.totalPrice,
+        //     customer: {
+        //         name: 'Miguel Vargas Cabezas',
+        //         country: 'Colombia',
+        //         address: {
+        //             neighborn: 'Perdomo',
+        //             area: 'Ciudad Perdomo'
+        //         }
+        //     }
+        // }
 
 
-        axios.post('/orders.json', ingredients)
-            .then(res => {
-                this.setState({loading: false,purchasing: false}); 
-            });
+        // axios.post('/orders.json', ingredients)
+        //     .then(res => {
+        //         this.setState({loading: false,purchasing: false});                 
+        //     });
+        const query = Object.keys(this.state.ingredients).map(ingre => {
+            return encodeURIComponent(ingre) + '=' + encodeURIComponent(this.state.ingredients[ingre]);
+        });
+        query.push(`price=${this.state.totalPrice}`);
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + query.join('&')
+        });
     }
 
     render(){
@@ -144,4 +152,5 @@ class BurgerBuilder extends Component{
     }
 }
 
-export default withErrorHandler(BurgerBuilder,axios);
+// export default withErrorHandler(BurgerBuilder,axios);
+export default BurgerBuilder;
