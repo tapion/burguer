@@ -9,11 +9,42 @@ import classes from './ContactData.module.css'
 class ContactData extends Component{
 
     state = {
-        name: '',
-        email: '',
-        street: {
-            street: '',
-            postalCode: 0
+        customerData:{
+            name: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your name'
+                }
+            },
+            country: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Country'
+                }
+            },
+            address: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'text',
+                    placeholder: 'Your address'
+                }
+            },
+            email: {
+                elementType: 'input',
+                elementConfig: {
+                    type: 'email',
+                    placeholder: 'Your e-mail'
+                }
+            },
+            delivery: {
+                elementType: 'select',
+                elementConfig: [
+                    {value:'fastest', displayValue: 'Fastest'},
+                    {value:'cheapest', displayValue: 'Cheapest'}
+                ]
+            }        
         },
         loading: false,
     }
@@ -24,14 +55,6 @@ class ContactData extends Component{
         const ingredients = {
             ingredients: this.props.ingredients,
             totalPrice: this.props.totalPrice,
-            customer: {
-                name: 'Miguel Vargas Cabezas',
-                country: 'Colombia',
-                address: {
-                    neighborn: 'Perdomo',
-                    area: 'Ciudad Perdomo'
-                }
-            }
         }
         console.log(ingredients);
         axios.post('/orders.json', ingredients)
@@ -45,10 +68,10 @@ class ContactData extends Component{
         let form = (<div>
             <h4>Enter your Contact Data</h4>
             <form>
-                <Input type="text" name="name" placeholder="Your Name" />
-                <Input type="email" name="email" placeholder="Your Email" />
-                <Input type="text" name="street" placeholder="Street" />
-                <Input type="text" name="postal" placeholder="Postal code" />
+                <Input label="Name" type="text" name="name" placeholder="Your Name" />
+                <Input label="Email" type="email" name="email" placeholder="Your Email" />
+                <Input label="Street" type="text" name="street" placeholder="Street" />
+                <Input label="Postal" type="text" name="postal" placeholder="Postal code" />
                 <Button btnType="Success" clicked={this.sendCustomerDataHandler}>Order</Button>
             </form>
         </div>);
